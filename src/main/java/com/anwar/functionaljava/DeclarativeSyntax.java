@@ -16,6 +16,7 @@ public class DeclarativeSyntax {
         checkisPrime();
         customSearch();
         functionReturningPredicate();
+        findSum();
     }
     
     
@@ -111,7 +112,7 @@ public class DeclarativeSyntax {
     
     
     
-    public static void functionReturningPredicate() {
+    private static void functionReturningPredicate() {
         System.out.println("Function returning predicate for custom logic");
         List<Integer> values = Arrays.asList(1, 2, 3, 7, 4, 5, 10);
 
@@ -127,5 +128,73 @@ public class DeclarativeSyntax {
         
         System.out.println("result:" + result);
         System.out.println("X---------------------X\n");
+    }
+    
+    private static void findSum() {
+        List<Integer> values = Arrays.asList(1,2,3,7,4,5,10);
+        System.out.println("Traditional way of implementing selector");
+        classSelector(values);
+        System.out.println("X---------------------X\n");
+        System.out.println("Functional way of implementing dynamic selector");
+        functionalSelector(values);
+        System.out.println("X---------------------X\n");
+    }
+    
+    private static void classSelector(List<Integer> values){
+        
+        int sum = 0;
+        
+        selector allselect  = new pickAll();
+        for(int e: values){
+               if(allselect.pick(e)){
+                   sum = sum + e;
+               }
+        }
+        System.out.println("All sum:"+sum);
+        
+        sum = 0; //Declarative requries resetting operation, functional does not
+        selector evenselect  = new pickEven();
+        for(int e: values){
+               if(evenselect.pick(e)){
+                   sum = sum + e;
+               }
+        }
+        System.out.println("Even sum:"+sum);
+    }
+    
+    private static void functionalSelector(List<Integer> values){
+        int sum = 0;
+        
+        //Sending the behavour to use run time via predicate
+        sum = totalValues(values, e -> true); //Pick all
+        System.out.println("Functional All sum:"+sum);
+        sum = totalValues(values, e -> e % 2 == 0);  //Pick even
+        System.out.println("Functional Even sum:"+sum);
+    }
+        
+       
+    private static int totalValues(List<Integer> values , Predicate<Integer> selector){
+        return values.stream()
+              .filter(selector)
+              .reduce(0, Math::addExact);
+    }
+}
+
+//Traditional way to implement dynamic behaviour using interfaces and classes
+interface selector {
+    public boolean pick(int number);
+}
+
+class pickAll implements selector {
+    @Override
+    public boolean pick(int number) {
+        return true;
+    }
+}
+
+class pickEven implements selector {
+    @Override
+    public boolean pick(int number) {
+        return number % 2 == 0;
     }
 }
