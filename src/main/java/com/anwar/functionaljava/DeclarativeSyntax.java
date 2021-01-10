@@ -93,7 +93,7 @@ public class DeclarativeSyntax {
                         .filter(DeclarativeSyntax :: isEven) //Reusing the function
                         .map(DeclarativeSyntax :: doubleIt)
                         .findFirst() //Code will internally only process what is needed once terminal operator is called
-                        .get(); //Until the get method is called no processing is done.
+                        .get(); //Until the get method is called no processing is done. This is example of lazy evaluation
           System.out.println("result:" + result);
     }
     
